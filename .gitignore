@@ -1,0 +1,46 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake stuff
+CMakeFiles
+CMakeCache.txt
+Makefile
+*.cmake
+
+# Visual Studio stuff
+*.vcxproj*
+Debug
+Win32
+*.dir
+*.sdf
+*.sln
+*.suo
+*.opensdf
+*.VC.VC.opendb
+*VC.db
