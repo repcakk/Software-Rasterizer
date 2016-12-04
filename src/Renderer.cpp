@@ -41,7 +41,7 @@ void Renderer::drawTriangle(glm::vec3 vtx0, glm::vec3 vtx1, glm::vec3 vtx2, glm:
 		invSlope1 = 0;
 	}
 
-	std::vector<Fragment*> *line;
+	std::vector<Fragment> *line = new std::vector<Fragment>;
 
 	if (invSlope0 > invSlope1)
 	{
@@ -61,6 +61,7 @@ void Renderer::drawTriangle(glm::vec3 vtx0, glm::vec3 vtx1, glm::vec3 vtx2, glm:
 			{
 				windowManager->updateFramebuffer(x, y, glm::vec3(155, 0, 0));
 			}
+			delete(line);
 		}
 	}
 	else
@@ -81,8 +82,10 @@ void Renderer::drawTriangle(glm::vec3 vtx0, glm::vec3 vtx1, glm::vec3 vtx2, glm:
 			{
 				windowManager->updateFramebuffer(x, y, glm::vec3(155, 0, 0));
 			}
+			delete(line);
 		}
 	}
+
 }
 
 void Renderer::drawFragment(Fragment * fragment)
@@ -96,24 +99,26 @@ glm::vec4 Renderer::project(glm::vec4 vertex, glm::mat4 mvpMatrix)
 
 void Renderer::render(Camera *camera, Mesh *mesh, WindowManager *windowManager)
 {
+	windowManager->clearScreen(glm::vec3(0, 0, 0));
+
 	glm::mat4 viewMatrix = glm::lookAt(camera->position, camera->target, glm::vec3(0, -1, 0));
-	glm::mat4 projectionMatrix = glm::perspective(60.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	glm::mat4 projectionMatrix = glm::perspective(30.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
 	glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * mesh->modelMatrix;
-
+	
 	for (unsigned int faceIdx = 0; faceIdx < mesh->faces->size(); ++faceIdx)
 	{
 
-		//glm::vec4 vtx0 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->a], 0);
-		//glm::vec4 vtx1 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->b], 0);
-		//glm::vec4 vtx2 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->c], 0);
+		glm::vec4 vtx0 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->a], 0);
+		glm::vec4 vtx1 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->b], 0);
+		glm::vec4 vtx2 = mvpMatrix * glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->c], 0);
 
-		glm::vec4 vtx0 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->a], 0);
-		glm::vec4 vtx1 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->b], 0);
-		glm::vec4 vtx2 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->c], 0);
+		//glm::vec4 vtx0 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->a], 0);
+		//glm::vec4 vtx1 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->b], 0);
+		//glm::vec4 vtx2 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->c], 0);
 
 		Renderer::drawTriangle(vtx0, vtx1, vtx2, glm::vec3(155, 0, 0), windowManager);
 	}
-
+	
 	windowManager->updateWindowSurface();
 }

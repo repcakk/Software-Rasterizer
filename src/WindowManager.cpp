@@ -27,8 +27,18 @@ void WindowManager::updateFramebuffer(unsigned int x, unsigned int y, glm::vec3 
 {
 	if (!SDL_LockSurface(windowSurface))
 	{
+		x += this->windowSurface->w/2;
+		y += this->windowSurface->h/2;
+
 		((unsigned int*)windowSurface->pixels)[y * this->windowSurface->w + x] = SDL_MapRGB(windowSurface->format, color.x, color.y, color.z);
 		SDL_UnlockSurface(windowSurface);
 	}
 
+}
+
+void WindowManager::clearScreen(glm::vec3 color)
+{	
+	SDL_Rect rect = { 0, 0, this->windowSurface->w, this->windowSurface->h };
+
+	SDL_FillRect(this->windowSurface, &rect, SDL_MapRGB(windowSurface->format, color.x, color.y, color.z));
 }

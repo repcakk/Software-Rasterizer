@@ -19,6 +19,7 @@ public:
 
 	void updateWindowSurface();
 	void updateFramebuffer(unsigned int x, unsigned int y, glm::vec3 color);
+	void clearScreen(glm::vec3 color);
 
 private:
 	SDL_Window *window;

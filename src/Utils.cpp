@@ -3,7 +3,7 @@
 
 float Utils::clamp(float value, float min, float max)
 {
-	return std::max(min, std::max(value, max));
+	return std::max(min, std::min(value, max));
 }
 
 float Utils::calcGradient(float a, float b, float position)
@@ -13,5 +13,6 @@ float Utils::calcGradient(float a, float b, float position)
 
 float Utils::interpolate(float min, float max, float gradient)
 {
+	float clampGrad = Utils::clamp(gradient);
 	return min + (max - min) * Utils::clamp(gradient);
 }
