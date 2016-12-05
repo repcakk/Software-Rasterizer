@@ -3,6 +3,7 @@
 
 #include <glm\glm.hpp>
 #include <vector>
+#include "Vertex.h"
 
 class Face
 {
@@ -21,7 +22,7 @@ public:
 	~Mesh();
 	
 	glm::mat4 modelMatrix;
-	std::vector<glm::vec3*> *vertices;
+	std::vector<Vertex*> *vertices;
 	std::vector<Face*> *faces;
 };
 
