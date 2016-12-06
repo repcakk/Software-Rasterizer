@@ -50,27 +50,37 @@ void Renderer::drawTriangle(Vertex *vtx0, Vertex *vtx1, Vertex *vtx2, WindowMana
 		std::swap(vtx0, vtx1);
 	}
 
-	float invSlope0, invSlope1;
+	float invSlope0 = 0, invSlope1;
+	bool right = false;
+	bool left = false;	
 	
 	if (vtx1->position.y - vtx0->position.y > 0)
 	{
 		invSlope0 = (vtx1->position.x - vtx0->position.x) / (vtx1->position.y - vtx0->position.y);
 	}
+	else if (vtx1->position.x > vtx0->position.x)
+	{
+		right = true;
+	}
 	else
 	{
-		invSlope0 = 0;
+		left = true;
 	}
 
 	if (vtx2->position.y - vtx0->position.y > 0)
 	{
 		invSlope1 = (vtx2->position.x - vtx0->position.x) / (vtx2->position.y - vtx0->position.y);
 	}
+	else if (vtx2->position.x > vtx0->position.x)
+	{
+		right = true;
+	}
 	else
 	{
-		invSlope1 = 0;
+		left = true;
 	}
 
-	if (invSlope0 > invSlope1)
+	if (right || (!left && invSlope0 > invSlope1))
 	{
 		for (int y = vtx0->position.y; y <= vtx2->position.y; ++y)
 		{
