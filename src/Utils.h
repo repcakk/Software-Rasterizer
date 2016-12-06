@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable : 4201)
 
 class Utils
 {
@@ -13,7 +12,11 @@ public:
 	//interpolate value between min and max with given gradient
 	static float interpolate(float min, float max, float gradient);
 
+	template <class T>
+	static T FastMax(const T& left, const T& right);
 
+	template <class T>
+	static T FastMin(const T& left, const T& right);
 
 private:
 	Utils();

@@ -1,6 +1,4 @@
 #pragma once
-#pragma warning(disable : 4201)
-
 #include <glm/glm.hpp>
 
 class Camera

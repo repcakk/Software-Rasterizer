@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable : 4201)
 
 #include <glm\glm.hpp>
 #include <vector>
@@ -22,7 +21,7 @@ public:
 	~Mesh();
 	
 	glm::mat4 modelMatrix;
-	std::vector<Vertex*> *vertices;
-	std::vector<Face*> *faces;
+	std::vector<Vertex> vertices;
+	std::vector<Face> faces;
 };
 

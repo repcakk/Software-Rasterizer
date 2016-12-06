@@ -1,9 +1,20 @@
 #include "Utils.h"
-#include <algorithm>
+
+template <class T>
+T Utils::FastMax(const T& left, const T& right)
+{
+	return left > right ? left : right;
+}
+
+template <class T>
+T Utils::FastMin(const T& left, const T& right)
+{
+	return left < right ? left : right;
+}
 
 float Utils::clamp(float value, float min, float max)
 {
-	return std::max(min, std::min(value, max));
+	return Utils::FastMax(min, Utils::FastMin(value, max));
 }
 
 float Utils::calcGradient(float a, float b, float position)

@@ -20,7 +20,10 @@ void Renderer::processScanLine(int scanLineY, Vertex *a, Vertex *b, Vertex *c, V
 	float g1 = Utils::interpolate(c->color.g, d->color.g, grad0);
 	float b1 = Utils::interpolate(c->color.b, d->color.b, grad0);
 
-	for (unsigned int x = sx; x < ex; ++x)
+	float z0 = Utils::interpolate(a->position.z, b->position.z, grad0);
+	float z1 = Utils::interpolate(c->position.z, d->position.z, grad1);
+
+	for (int x = sx; x < ex; ++x)
 	{
 		float colorGrad = Utils::calcGradient(sx, ex, x);
 
@@ -28,7 +31,12 @@ void Renderer::processScanLine(int scanLineY, Vertex *a, Vertex *b, Vertex *c, V
 		float finalG = Utils::interpolate(g0, g1, colorGrad);
 		float finalB = Utils::interpolate(b0, b1, colorGrad);
 
-		windowManager->updateFramebuffer(x, scanLineY, glm::vec3(finalR, finalG, finalB));
+		float zGrad = Utils::calcGradient(sx, ex, x);
+
+		float z = Utils::interpolate(z0, z1, zGrad);
+
+
+		windowManager->updateFramebuffer(x + windowManager->getWindowWidth()/2, scanLineY + windowManager->getWindowHeight()/2, z, glm::vec3(finalR, finalG, finalB));
 	}
 }
 
@@ -50,10 +58,10 @@ void Renderer::drawTriangle(Vertex *vtx0, Vertex *vtx1, Vertex *vtx2, WindowMana
 		std::swap(vtx0, vtx1);
 	}
 
-	float invSlope0 = 0, invSlope1;
-	bool right = false;
-	bool left = false;	
+	float invSlope0 = 0, invSlope1 = 0;
 	
+	bool right = false, left = false;
+
 	if (vtx1->position.y - vtx0->position.y > 0)
 	{
 		invSlope0 = (vtx1->position.x - vtx0->position.x) / (vtx1->position.y - vtx0->position.y);
@@ -111,11 +119,6 @@ void Renderer::drawTriangle(Vertex *vtx0, Vertex *vtx1, Vertex *vtx2, WindowMana
 
 }
 
-glm::vec4 Renderer::project(glm::vec4 vertex, glm::mat4 mvpMatrix)
-{
-	return mvpMatrix * vertex;
-}
-
 void Renderer::render(Camera *camera, Mesh *mesh, WindowManager *windowManager)
 {
 	windowManager->clearScreen(glm::vec3(0, 0, 0));
@@ -125,20 +128,17 @@ void Renderer::render(Camera *camera, Mesh *mesh, WindowManager *windowManager)
 
 	glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * mesh->modelMatrix;
 	
-	for (unsigned int faceIdx = 0; faceIdx < mesh->faces->size(); ++faceIdx)
+	for (int faceIdx = 0; faceIdx < mesh->faces.size(); ++faceIdx)
 	{
-
-		Vertex *vtx0 = new Vertex(mvpMatrix * glm::vec4((*mesh->vertices)[(*mesh->faces)[faceIdx]->a]->position), (*mesh->vertices)[(*mesh->faces)[faceIdx]->a]->color);
-		Vertex *vtx1 = new Vertex(mvpMatrix * glm::vec4((*mesh->vertices)[(*mesh->faces)[faceIdx]->b]->position), (*mesh->vertices)[(*mesh->faces)[faceIdx]->b]->color);
-		Vertex *vtx2 = new Vertex(mvpMatrix * glm::vec4((*mesh->vertices)[(*mesh->faces)[faceIdx]->c]->position), (*mesh->vertices)[(*mesh->faces)[faceIdx]->c]->color);
-
-
-		//glm::vec4 vtx0 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->a], 0);
-		//glm::vec4 vtx1 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->b], 0);
-		//glm::vec4 vtx2 = glm::vec4(*(*mesh->vertices)[(*mesh->faces)[faceIdx]->c], 0);
-
+		Vertex *vtx0 = new Vertex(mvpMatrix * glm::vec4((mesh->vertices)[(mesh->faces)[faceIdx].a].position), (mesh->vertices)[(mesh->faces)[faceIdx].a].color);
+		Vertex *vtx1 = new Vertex(mvpMatrix * glm::vec4((mesh->vertices)[(mesh->faces)[faceIdx].b].position), (mesh->vertices)[(mesh->faces)[faceIdx].b].color);
+		Vertex *vtx2 = new Vertex(mvpMatrix * glm::vec4((mesh->vertices)[(mesh->faces)[faceIdx].c].position), (mesh->vertices)[(mesh->faces)[faceIdx].c].color);
+		
 		Renderer::drawTriangle(vtx0, vtx1, vtx2, windowManager);
+		
+		delete(vtx0);
+		delete(vtx1);
+		delete(vtx2);
 	}
-	
 	windowManager->updateWindowSurface();
 }

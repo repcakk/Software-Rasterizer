@@ -6,8 +6,6 @@
 #   include <SDL2/SDL.h>
 #endif
 
-#pragma warning(disable : 4201)
-
 #include <glm/glm.hpp>
 
 
@@ -18,11 +16,15 @@ public:
 	~WindowManager();
 
 	void updateWindowSurface();
-	void updateFramebuffer(unsigned int x, unsigned int y, glm::vec3 color);
+	void updateFramebuffer(int x, int y, float z, glm::vec3 color);
 	void clearScreen(glm::vec3 color);
+
+	int getWindowWidth();
+	int getWindowHeight();
 
 private:
 	SDL_Window *window;
 	SDL_Surface* windowSurface;
+	float *depthBuffer;
 };
 
